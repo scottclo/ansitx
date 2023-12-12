@@ -5,12 +5,15 @@ fn main() {
     let mut ch_iter = input.chars();
     while let Some(ch) = ch_iter.next() {
         if ch as u32 == 27 {
-            let sequence: String = String::new();
-            if (Some(ch) = ch_iter.next()) == '[' {
-
+            let mut sequence: String = String::new();
+            if let Some(ch) = ch_iter.next() {
+                if ch == '[' {
+                   sequence.push(ch);
+                   while let Some(ch) = ch_iter.next() {
+                        
+                   }
+                }
             }
-
         }
     }
-
 }
