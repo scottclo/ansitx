@@ -24,7 +24,7 @@ memory5663M / 15920M
 
 plain text using ansitx
 ```console
-$ pfetch | ansiitx
+$ pfetch | ansitx
     _______      scott@shop-pc
  _ \______ -     os     Void Linux
 | \  ___  \ |    host   MS-7C91 2.0
