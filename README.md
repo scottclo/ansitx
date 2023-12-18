@@ -40,7 +40,7 @@ $ vi plain.txt
 
 ```
 
-## Planned/Supported ansi commands
+## Planned/Supported ANSI commands
 - [x] A - Cursor Up
 - [x] B - Cursor Down
 - [x] b - Cursor Vertical Absolute
