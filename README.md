@@ -1,9 +1,9 @@
 # ansitx (Work in progress)
 Converts text containing ANSI escapes to plain text while retaining cursor movements.
-Currently, it only supports a limited number of ANSI functions but is functional for neofetch and other uses.
+Currently, it only supports a limited number of ANSI functions but it's functional for neofetch and other uses.
 
-## Example
-plain text using ansitx
+## Examples
+With ansitx
 ```console
 $ pfetch | ansitx > plain.txt
 $ vi plain.txt
@@ -16,8 +16,7 @@ $ vi plain.txt
  -_______\       memory 3621M / 15920M
 
 ```
-
-Plain text without using ansitx
+Without ansitx
 ```console
 $ pfetch > plain.txt
 $ vi plain.txt
