@@ -1,8 +1,22 @@
 # ansitx (Work in progress)
-Converts strings containing ANSI escapes to plain text while retaining cursor movements.
-Currently, it only supports a limited number of ANSI functions but is functional for neofetch style programs.
+Converts text containing ANSI escapes to plain text while retaining cursor movements.
+Currently, it only supports a limited number of ANSI functions but is functional for neofetch and other uses.
 
 ## Example
+plain text using ansitx
+```console
+$ pfetch | ansitx > plain.txt
+$ vi plain.txt
+    _______      scott@shop-pc
+ _ \______ -     os     Void Linux
+| \  ___  \ |    host   MS-7C91 2.0
+| | /   \ | |    kernel 6.5.13_1
+| | \___/ | |    uptime 11d 22h 5m
+| \______ \_|    pkgs   808
+ -_______\       memory 3621M / 15920M
+
+```
+
 Plain text without using ansitx
 ```console
 $ pfetch > plain.txt
@@ -23,20 +37,6 @@ $ vi plain.txt
 ^[[17C^[[32;1mmemory^[[m^[[6D^[[7C^[[37m3621M / 15920M^[[m
 
 ^[[?7h
-
-```
-
-plain text using ansitx
-```console
-$ pfetch | ansitx > plain.txt
-$ vi plain.txt
-    _______      scott@shop-pc
- _ \______ -     os     Void Linux
-| \  ___  \ |    host   MS-7C91 2.0
-| | /   \ | |    kernel 6.5.13_1
-| | \___/ | |    uptime 11d 22h 5m
-| \______ \_|    pkgs   808
- -_______\       memory 3621M / 15920M
 
 ```
 
