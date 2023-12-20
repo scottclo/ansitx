@@ -205,7 +205,7 @@ fn main() {
                     let i = command.args.len() - 1;
                     command.args[i].push(ch.clone());
                 } else if ch == '(' {
-                    command.function.push(ch); 
+                    command.function.push(ch);
                 }else if ch.is_alphabetic() {
                     command.function.push(ch);
                     mode = 0;
@@ -241,7 +241,7 @@ fn main() {
                                 t => warning(&quiet, format!("[{}K is not implemented", t)),
                             }
                         },
-                        |"m"|"l"|"h"|"r"|"X"|"(B"=> (), // Ignored 
+                        |"m"|"l"|"h"|"r"|"X"|"(B"=> (), // Ignored
                         _none => warning(&quiet, format!("{:?}{}: Is not currently handled.", command.args, command.function)),
                     }
                 } else {
