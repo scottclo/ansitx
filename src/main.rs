@@ -99,6 +99,14 @@ impl ScreenCursor{
     fn set_y(&mut self, y:usize) {
         self.y = y;
     }
+    fn next_line(&mut self, n:usize) {
+        self.move_down(n);
+        self.set_x(0);
+    }
+    fn previous_line(&mut self, n:usize) {
+        self.move_up(n);
+        self.set_x(0);
+    }
 }
 
 
@@ -162,8 +170,7 @@ fn main() {
                     cursor.set_x(0);
                 }
                 else if ch == '\n' {
-                    cursor.set_x(0);
-                    cursor.move_down(1);
+                    cursor.next_line(1)
                 }else if ch as u32 > 0 && ch as u32 <= 31 {
                     warning(&quiet, format!("{:?} is not implemented", ch));
                 }else {
@@ -191,9 +198,11 @@ fn main() {
                     match command.function.as_str() {
                         "A" => cursor.move_up(command.get_arg_usize(0).unwrap_or(1)),
                         "B" => cursor.move_down(command.get_arg_usize(0).unwrap_or(1)),
-                        "d" => cursor.set_y(command.get_arg_usize(0).unwrap_or(0)-1),
                         "C" => cursor.move_right(command.get_arg_usize(0).unwrap_or(1)),
                         "D" => cursor.move_left(command.get_arg_usize(0).unwrap_or(1)),
+                        "d" => cursor.set_y(command.get_arg_usize(0).unwrap_or(0)-1),
+                        "E" => cursor.next_line(command.get_arg_usize(0).unwrap_or(1)),
+                        "F" => cursor.previous_line(command.get_arg_usize(0).unwrap_or(1)),
                         "G" => cursor.set_x(command.get_arg_usize(0).unwrap_or(0)-1),
                         "H"|"f" => {
                             cursor.set_x(command.get_arg_usize(1).unwrap_or(1)-1);

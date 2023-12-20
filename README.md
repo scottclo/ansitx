@@ -45,8 +45,8 @@ $ vi plain.txt
 - [x] b - Cursor Vertical Absolute
 - [x] C - Cursor Forward
 - [x] D - Cursor Back
-- [ ] E - Curosr Cursor Next Line 
-- [ ] F - Cursor Previus Line
+- [x] E - Curosr Cursor Next Line 
+- [x] F - Cursor Previus Line
 - [x] f - Horizontal Vertical Position(same as H)
 - [x] G - Cursor Horizontal Absolute
 - [x] H - Cursor Poition
