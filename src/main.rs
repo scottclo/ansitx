@@ -1,17 +1,78 @@
-use std::{io, env};
+use std::{io,env};
 
+struct ScreenBuffer{
+    state : Vec<Vec<char>>,
+}
+
+impl ScreenBuffer{
+    fn new() -> ScreenBuffer {
+        ScreenBuffer{ state : Vec::new() }
+    }
+    fn clear(&mut self) {
+        self.state = Vec::new();
+    }
+    fn print(&mut self) {
+        for line in self.state.iter(){
+            print!("{}\n", line.iter().collect::<String>());
+        }
+    }
+    fn clear_before(&mut self, cursor: &ScreenCursor) {
+        if self.state.len() > 0 {
+            for i in self.state.len()-1..0 {
+                if i > cursor.y {
+                    self.state.remove(i);
+                } else if i == cursor.y {
+                    if self.state[i].len() > 0 {
+                        for ii in self.state[i].len()-1..0 {
+                            if ii < cursor.x {
+                                self.state[i].remove(ii);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fn clear_after(&mut self, cursor: &ScreenCursor) {
+        if self.state.len() > 0 {
+            for i in 0..self.state.len()-1 {
+                if i <= cursor.y {
+                    if self.state[i].len() > 0 {
+                        for ii in 0..self.state[i].len()-1 {
+                            if ii < cursor.x {
+                                self.state[i][ii] = ' ';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    fn expand_to_cursor(&mut self, cursor: &ScreenCursor) {
+        if self.state.len() <= cursor.y {
+            self.state.resize_with(cursor.y + 1, Default::default);
+        }
+        self.state[cursor.y].resize(cursor.x + 1, ' ');
+    }
+    fn set_at_cursor(&mut self, cursor: &ScreenCursor, ch: char){
+        self.expand_to_cursor(cursor);
+        self.state[cursor.y][cursor.x] = ch;
+    }
+}
 
 #[derive(Debug)]
-struct Cursor {
+struct ScreenCursor {
     x: usize,
     y: usize,
 }
 
-impl Cursor{
-    fn new() -> Cursor {
-        Cursor { x: 0, y: 0 }
+impl ScreenCursor{
+    fn new() -> ScreenCursor {
+        ScreenCursor { x: 0, y: 0 }
     }
-
+    fn reset(&mut self) {
+        (self.x, self.y) = (0,0)
+    }
     fn move_left(&mut self, x: usize) {
         if x < self.x {
             self.x -= x;
@@ -31,6 +92,12 @@ impl Cursor{
     }
     fn move_down(&mut self, y:usize) {
         self.y += y;
+    }
+    fn set_x(&mut self, x:usize) {
+        self.x = x;
+    }
+    fn set_y(&mut self, y:usize) {
+        self.y = y;
     }
 }
 
@@ -74,10 +141,10 @@ fn main() {
     let mut ch_iter = input.chars();
     let mut mode: u32 = 0;
     let mut command: Command = Command::new();
-    let mut cursor: Cursor = Cursor{x:0, y:0};
-    let mut buffer: Vec<Vec<char>> = Vec::new();
+    let mut cursor: ScreenCursor = ScreenCursor::new();
+    let mut buffer: ScreenBuffer = ScreenBuffer::new();
     let mut quiet: bool = false;
-    
+
     for args in &args[1..] {
         match args.as_str() {
             "-q" | "--quiet" => quiet = true,
@@ -92,21 +159,18 @@ fn main() {
                     mode = 1;
                     command = Command::new();
                 }else if ch == '\r' {
-                    cursor.x = 0;
+                    cursor.set_x(0);
                 }
                 else if ch == '\n' {
-                    cursor.x = 0;
-                    cursor.y += 1;
+                    cursor.set_x(0);
+                    cursor.move_down(1);
                 }else if ch as u32 > 0 && ch as u32 <= 31 {
                     warning(&quiet, format!("{:?} is not implemented", ch));
                 }else {
-                    if buffer.len() <= cursor.y {
-                        buffer.resize_with(cursor.y + 1, Default::default);
-                    }
-                    buffer[cursor.y].resize(cursor.x + 1, ' ');
-                    buffer[cursor.y][cursor.x] = ch.clone();
-                    cursor.x += 1;
+                    buffer.set_at_cursor(&cursor, ch.clone());
+                    cursor.move_right(1);
                 }
+
             },
             1 => {//ansii escape
                 if ch == ']' {
@@ -127,52 +191,28 @@ fn main() {
                     match command.function.as_str() {
                         "A" => cursor.move_up(command.get_arg_usize(0).unwrap_or(1)),
                         "B" => cursor.move_down(command.get_arg_usize(0).unwrap_or(1)),
-                        "d" => cursor.y = command.get_arg_usize(0).unwrap_or(0)-1,
+                        "d" => cursor.set_y(command.get_arg_usize(0).unwrap_or(0)-1),
                         "C" => cursor.move_right(command.get_arg_usize(0).unwrap_or(1)),
                         "D" => cursor.move_left(command.get_arg_usize(0).unwrap_or(1)),
-                        "G" => cursor.x = command.get_arg_usize(0).unwrap_or(0)-1,
+                        "G" => cursor.set_x(command.get_arg_usize(0).unwrap_or(0)-1),
                         "H" => {
-                            cursor.x = command.get_arg_usize(1).unwrap_or(1)-1;
-                            cursor.y = command.get_arg_usize(0).unwrap_or(1)-1;
+                            cursor.set_x(command.get_arg_usize(1).unwrap_or(1)-1);
+                            cursor.set_y(command.get_arg_usize(0).unwrap_or(1)-1);
                         },
                         "J" => {
                             match command.get_arg_usize(0).unwrap_or(0) {
                                 0 => {
-                                    if buffer.len() > 0 {
-                                        for i in 0..buffer.len()-1 {
-                                            if i <= cursor.y {
-                                                if buffer[i].len() > 0 {
-                                                    for ii in 0..buffer[i].len()-1 {
-                                                        if ii < cursor.x {
-                                                            buffer[i][ii] = ' ';
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    buffer.clear_after(&cursor);
+
                                 },
 
                                 1 => {
-                                    if buffer.len() > 0 {
-                                        for i in buffer.len()-1..0 {
-                                            if i > cursor.y {
-                                                buffer.remove(i);
-                                            } else if i == cursor.y {
-                                                if buffer[i].len() > 0 {
-                                                    for ii in buffer[i].len()-1..0 {
-                                                        if ii < cursor.x {
-                                                            buffer[i].remove(ii);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    buffer.clear_before(&cursor);
+
                                 },
                                 2 | 3 => {
-                                    cursor = Cursor::new();
-                                    buffer = Vec::new();
+                                    cursor.reset();
+                                    buffer.clear();
                                 }
                                 t => warning(&quiet, format!("[{}J is not implemented", t)),
                             }
@@ -195,7 +235,5 @@ fn main() {
             u => print!("{u} is not a mode... How did we get here?")
         }
     }
-    for line in buffer{
-        print!("{}\n", line.iter().collect::<String>());
-    }
+    buffer.print();
 }
