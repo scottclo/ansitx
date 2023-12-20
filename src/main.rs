@@ -16,7 +16,7 @@ impl ScreenBuffer{
             print!("{}\n", line.iter().collect::<String>());
         }
     }
-    fn clear_before(&mut self, cursor: &ScreenCursor) {
+    fn clear_screen_before(&mut self, cursor: &ScreenCursor) {
         if self.state.len() > 0 {
             for i in self.state.len()-1..0 {
                 if i > cursor.y {
@@ -33,7 +33,7 @@ impl ScreenBuffer{
             }
         }
     }
-    fn clear_after(&mut self, cursor: &ScreenCursor) {
+    fn clear_screen_after(&mut self, cursor: &ScreenCursor) {
         if self.state.len() > 0 {
             for i in 0..self.state.len()-1 {
                 if i <= cursor.y {
@@ -195,19 +195,19 @@ fn main() {
                         "C" => cursor.move_right(command.get_arg_usize(0).unwrap_or(1)),
                         "D" => cursor.move_left(command.get_arg_usize(0).unwrap_or(1)),
                         "G" => cursor.set_x(command.get_arg_usize(0).unwrap_or(0)-1),
-                        "H" => {
+                        "H"|"f" => {
                             cursor.set_x(command.get_arg_usize(1).unwrap_or(1)-1);
                             cursor.set_y(command.get_arg_usize(0).unwrap_or(1)-1);
                         },
                         "J" => {
                             match command.get_arg_usize(0).unwrap_or(0) {
                                 0 => {
-                                    buffer.clear_after(&cursor);
+                                    buffer.clear_screen_after(&cursor);
 
                                 },
 
                                 1 => {
-                                    buffer.clear_before(&cursor);
+                                    buffer.clear_screen_before(&cursor);
 
                                 },
                                 2 | 3 => {
