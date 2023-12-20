@@ -16,6 +16,20 @@ impl ScreenBuffer{
             print!("{}\n", line.iter().collect::<String>());
         }
     }
+    fn clear_line_at(&mut self, cursor: &ScreenCursor){
+        self.state[cursor.y] = Vec::new();
+        self.expand_to_cursor(cursor);
+    }
+    fn clear_line_before(&mut self, cursor: &ScreenCursor){
+        for i in 0..cursor.x {
+            self.state[cursor.y][i] = ' ';
+        }
+    }
+    fn clear_line_after(&mut self, cursor: &ScreenCursor){
+        for i in self.state[cursor.y].len()-1..cursor.x{
+            self.state[cursor.y].remove(i);
+        }
+    }
     fn clear_screen_before(&mut self, cursor: &ScreenCursor) {
         if self.state.len() > 0 {
             for i in self.state.len()-1..0 {
@@ -143,7 +157,6 @@ fn warning(quiet: &bool, message: String) {
 }
 
 fn main() {
-    env::set_var("RUST_BACKTRACE", "full");
     let args: Vec<String> = env::args().collect();
     let input: String = io::read_to_string(io::stdin()).unwrap();
     let mut ch_iter = input.chars();
@@ -155,6 +168,7 @@ fn main() {
 
     for args in &args[1..] {
         match args.as_str() {
+            "-d" | "--debug" => env::set_var("RUST_BACKTRACE", "full"),
             "-q" | "--quiet" => quiet = true,
             _ => ()
         }
@@ -168,8 +182,7 @@ fn main() {
                     command = Command::new();
                 }else if ch == '\r' {
                     cursor.set_x(0);
-                }
-                else if ch == '\n' {
+                }else if ch == '\n' {
                     cursor.next_line(1)
                 }else if ch as u32 > 0 && ch as u32 <= 31 {
                     warning(&quiet, format!("{:?} is not implemented", ch));
@@ -177,7 +190,6 @@ fn main() {
                     buffer.set_at_cursor(&cursor, ch.clone());
                     cursor.move_right(1);
                 }
-
             },
             1 => {//ansii escape
                 if ch == ']' {
@@ -208,22 +220,23 @@ fn main() {
                             cursor.set_x(command.get_arg_usize(1).unwrap_or(1)-1);
                             cursor.set_y(command.get_arg_usize(0).unwrap_or(1)-1);
                         },
-                        "J" => {
+                        "J" => { //erase in display
                             match command.get_arg_usize(0).unwrap_or(0) {
-                                0 => {
-                                    buffer.clear_screen_after(&cursor);
-
-                                },
-
-                                1 => {
-                                    buffer.clear_screen_before(&cursor);
-
-                                },
+                                0 => buffer.clear_screen_after(&cursor),
+                                1 => buffer.clear_screen_before(&cursor),
                                 2 | 3 => {
                                     cursor.reset();
                                     buffer.clear();
-                                }
+                                },
                                 t => warning(&quiet, format!("[{}J is not implemented", t)),
+                            }
+                        },
+                        "K" => { //erase in line
+                            match command.get_arg_usize(0).unwrap_or(0) {
+                                0 => buffer.clear_line_after(&cursor),
+                                1 => buffer.clear_line_before(&cursor),
+                                2 => buffer.clear_line_at(&cursor),
+                                t => warning(&quiet, format!("[{}K is not implemented", t)),
                             }
                         },
                         |"m"|"l"|"h"|"r"|"X"|"(B"=> (), // Ignored 
@@ -241,7 +254,7 @@ fn main() {
             3 => {//
                 mode = 0;
             },
-            u => print!("{u} is not a mode... How did we get here?")
+            u => warning(&quiet, format!("{u} is not a mode... How did we get here?"))
         }
     }
     buffer.print();

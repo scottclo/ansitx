@@ -51,7 +51,7 @@ $ vi plain.txt
 - [x] G - Cursor Horizontal Absolute
 - [x] H - Cursor Poition
 - [x] J - Erase in Display
-- [ ] K - Erase in Line
+- [x] K - Erase in Line
 ## Planned/Suported ASCII control charactars
 - [ ] BS - Back Space
 - [ ] HT(\t) - Horizontal Tab
