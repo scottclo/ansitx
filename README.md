@@ -53,7 +53,7 @@ $ vi plain.txt
 - [x] J - Erase in Display
 - [x] K - Erase in Line
 ## Planned/Suported ASCII control charactars
-- [ ] BS - Back Space
+- [x] BS - Back Space
 - [ ] HT(\t) - Horizontal Tab
 - [x] LF(\n) - Line Feed
 - [x] CR(\r) - Carrage Return

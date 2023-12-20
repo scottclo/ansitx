@@ -182,10 +182,12 @@ fn main() {
                     command = Command::new();
                 }else if ch == '\r' {
                     cursor.set_x(0);
+                }else if ch as u32 == 8 {
+                    cursor.move_left(1);
                 }else if ch == '\n' {
                     cursor.next_line(1)
                 }else if ch as u32 > 0 && ch as u32 <= 31 {
-                    warning(&quiet, format!("{:?} is not implemented", ch));
+                    warning(&quiet, format!("ASCII Control: {:?} is not implemented", ch));
                 }else {
                     buffer.set_at_cursor(&cursor, ch.clone());
                     cursor.move_right(1);
@@ -251,7 +253,7 @@ fn main() {
                     mode = 0;
                 }
             },
-            3 => {//
+            3 => {//some nonsense
                 mode = 0;
             },
             u => warning(&quiet, format!("{u} is not a mode... How did we get here?"))
