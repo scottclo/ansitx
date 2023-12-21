@@ -1,4 +1,4 @@
-use std::{io,env};
+use std::{io, env};
 
 struct ScreenBuffer{
     state : Vec<Vec<char>>,
@@ -31,34 +31,24 @@ impl ScreenBuffer{
         }
     }
     fn clear_screen_before(&mut self, cursor: &ScreenCursor) {
-        if self.state.len() > 0 {
-            for i in (0..self.state.len()).rev() {
-                if i > cursor.y {
-                    self.state.remove(i);
-                } else if i == cursor.y {
-                    if self.state[i].len() > 0 {
-                        for ii in self.state[i].len()-1..0 {
-                            if ii < cursor.x {
-                                self.state[i].remove(ii);
-                            }
-                        }
-                    }
+        for i in 0..=cursor.y {
+            if i == cursor.y {
+                for ii in 0..=cursor.x {
+                    self.state[i][ii] = ' ';
                 }
+            } else {
+                self.state[i].clear();
             }
         }
     }
     fn clear_screen_after(&mut self, cursor: &ScreenCursor) {
-        if self.state.len() > 0 {
-            for i in 0..self.state.len()-1 {
-                if i <= cursor.y {
-                    if self.state[i].len() > 0 {
-                        for ii in 0..self.state[i].len()-1 {
-                            if ii < cursor.x {
-                                self.state[i][ii] = ' ';
-                            }
-                        }
-                    }
+        for i in (cursor.y..self.state.len()).rev() {
+            if i == cursor.y {
+                for ii in (cursor.x..self.state[i].len()).rev() {
+                    self.state[i].remove(ii);
                 }
+            } else {
+                self.state.remove(i);
             }
         }
     }
