@@ -159,8 +159,7 @@ Convert input containing ANSI escape sequences into plain text.
   Options:
     -d, --debug     Set RUST_BACKTRACE=\"full\". 
     -h, --help      Display this help message.
-    -q, --quiet     Hide warning messages
-");
+    -q, --quiet     Hide warning messages\n\n");
 }
 
 fn main() {
