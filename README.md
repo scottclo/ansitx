@@ -42,19 +42,20 @@ $ vi plain.txt
 ## Planned/Supported ANSI commands
 - [x] A - Cursor Up(Tested)
 - [x] B - Cursor Down(Tested)
-- [x] b - Cursor Vertical Absolute
 - [x] C - Cursor Forward(Tested)
 - [x] D - Cursor Back(Tested)
+- [x] d - Cursor Vertical Absolute(Tested)
 - [x] E - Curosr Cursor Next Line (Tested)
 - [x] F - Cursor Previus Line(Tested)
-- [x] f - Horizontal Vertical Position(same as H)
-- [x] G - Cursor Horizontal Absolute
+- [x] f - Horizontal Vertical Position(Tested)
+- [x] G - Cursor Horizontal Absolute(Tested)
 - [x] H - Cursor Poition(Tested)
 - [x] J - Erase in Display(Tested)
 - [x] K - Erase in Line(Tested)
 ## Planned/Suported ASCII control charactars
-- [x] BS - Back Space
+- [x] BS - Back Space(Tested)
 - [x] HT(\t) - Horizontal Tab(Tested)
+- [x] HT - Horizontal Tab(Tested)
 - [x] LF(\n) - Line Feed(Tested)
 - [x] CR(\r) - Carrage Return(Tested)
 - [x] ESC(\e) - Escape(Tested)

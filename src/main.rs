@@ -179,7 +179,7 @@ fn main() {
                     cursor.set_x(0);
                 }else if ch as u32 == 8 {
                     cursor.move_left(1);
-                }else if ch == '\n' {
+                }else if ch == '\n' || ch as u32 == 11 {
                     cursor.next_line(1)
                 }else if ch == '\t' {
                     cursor.horazontal_tab();
