@@ -1,0 +1,3 @@
+test	tab
+Text Before[1KText After
+Text BeforeText After[10D[K

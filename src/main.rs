@@ -26,7 +26,7 @@ impl ScreenBuffer{
         }
     }
     fn clear_line_after(&mut self, cursor: &ScreenCursor){
-        for i in self.state[cursor.y].len()-1..cursor.x{
+        for i in (cursor.x..self.state[cursor.y].len()).rev(){
             self.state[cursor.y].remove(i);
         }
     }
