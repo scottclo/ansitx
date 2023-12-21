@@ -1,6 +1,0 @@
-test	tab
-test	tab[5Dx
-Text Before[1KText After
-Text BeforeText After[10D[0K
-Text BeforeText After[10D[2KAfter Clear Line
-
