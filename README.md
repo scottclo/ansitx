@@ -1,6 +1,6 @@
 # ansitx (Work in progress)
 Converts text containing ANSI escapes to plain text while retaining cursor movements.
-Currently, it only supports a limited number of ANSI functions but it's functional for neofetch and other uses.
+Currently in testing phase. All planned functionality has been implimented.
 
 ## Examples
 With ansitx
@@ -54,7 +54,7 @@ $ vi plain.txt
 - [x] K - Erase in Line
 ## Planned/Suported ASCII control charactars
 - [x] BS - Back Space
-- [ ] HT(\t) - Horizontal Tab
+- [x] HT(\t) - Horizontal Tab
 - [x] LF(\n) - Line Feed
 - [x] CR(\r) - Carrage Return
 - [x] ESC(\e) - Escape

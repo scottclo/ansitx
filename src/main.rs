@@ -32,7 +32,7 @@ impl ScreenBuffer{
     }
     fn clear_screen_before(&mut self, cursor: &ScreenCursor) {
         if self.state.len() > 0 {
-            for i in self.state.len()-1..0 {
+            for i in (0..self.state.len()).rev() {
                 if i > cursor.y {
                     self.state.remove(i);
                 } else if i == cursor.y {
@@ -66,7 +66,9 @@ impl ScreenBuffer{
         if self.state.len() <= cursor.y {
             self.state.resize_with(cursor.y + 1, Default::default);
         }
-        self.state[cursor.y].resize(cursor.x + 1, ' ');
+        if self.state[cursor.y].len() <= cursor.x {
+            self.state[cursor.y].resize(cursor.x + 1, ' ');
+        }
     }
     fn set_at_cursor(&mut self, cursor: &ScreenCursor, ch: char){
         self.expand_to_cursor(cursor);
@@ -120,6 +122,9 @@ impl ScreenCursor{
     fn previous_line(&mut self, n:usize) {
         self.move_up(n);
         self.set_x(0);
+    }
+    fn horazontal_tab(&mut self) {
+        self.x = self.x + self.x % 8;
     }
 }
 
@@ -186,7 +191,10 @@ fn main() {
                     cursor.move_left(1);
                 }else if ch == '\n' {
                     cursor.next_line(1)
-                }else if ch as u32 > 0 && ch as u32 <= 31 {
+                }else if ch == '\t' {
+                    cursor.horazontal_tab();
+                }
+                else if ch as u32 > 0 && ch as u32 <= 31 {
                     warning(&quiet, format!("ASCII Control: {:?} is not implemented", ch));
                 }else {
                     buffer.set_at_cursor(&cursor, ch.clone());
