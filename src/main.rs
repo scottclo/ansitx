@@ -151,20 +151,52 @@ fn warning(quiet: &bool, message: String) {
     }
 }
 
+fn help() {
+    print!(
+"
+Usage: input | ansitx [options]
+Convert input containing ANSI escape sequences into plain text. 
+  Options:
+    -d, --debug     Set RUST_BACKTRACE=\"full\". 
+    -h, --help      Display this help message.
+    -q, --quiet     Hide warning messages
+");
+}
+
 fn main() {
+    let mut quiet: bool = false;
     let args: Vec<String> = env::args().collect();
+
+    for args in &args[1..] {
+        match args.as_str() {
+            "-d" | "--debug" => env::set_var("RUST_BACKTRACE", "full"),
+            "-q" | "--quiet" => quiet = true,
+            "-h" | "--help" => {
+                help();
+                return;
+            },
+            a => {
+                println!("{:?} is not a valid option.", a);
+                return;
+            }
+        }
+    }
+
     let input: String = io::read_to_string(io::stdin()).unwrap();
     let mut ch_iter = input.chars();
     let mut mode: u32 = 0;
     let mut command: Command = Command::new();
     let mut cursor: ScreenCursor = ScreenCursor::new();
     let mut buffer: ScreenBuffer = ScreenBuffer::new();
-    let mut quiet: bool = false;
 
     for args in &args[1..] {
         match args.as_str() {
             "-d" | "--debug" => env::set_var("RUST_BACKTRACE", "full"),
             "-q" | "--quiet" => quiet = true,
+            "-h" | "--help" => {
+                help();
+                return;
+            },
             _ => ()
         }
     }
@@ -184,7 +216,7 @@ fn main() {
                 }else if ch == '\t' {
                     cursor.horazontal_tab();
                 }
-                else if ch as u32 > 0 && ch as u32 <= 31 {
+                else if (ch as u32 > 0 && ch as u32 <= 31) || ch as u32 == 127 {
                     warning(&quiet, format!("ASCII Control: {:?} is not implemented", ch));
                 }else {
                     buffer.set_at_cursor(&cursor, ch.clone());
