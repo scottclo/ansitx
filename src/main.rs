@@ -180,6 +180,9 @@ fn main() {
             }
         }
     }
+    if atty::is(atty::Stream::Stdin) {
+        return;
+    }
 
     let input: String = io::read_to_string(io::stdin()).unwrap();
     let mut ch_iter = input.chars();
