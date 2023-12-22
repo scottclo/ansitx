@@ -1,4 +1,4 @@
-# ansitx (Work in progress)
+# ansitx
 Converts input containing ANSI escapes to plain text while retaining cursor movements.
 
 ## Examples
