@@ -180,6 +180,7 @@ fn main() {
             }
         }
     }
+
     if atty::is(atty::Stream::Stdin) {
         return;
     }
@@ -191,19 +192,7 @@ fn main() {
     let mut cursor: ScreenCursor = ScreenCursor::new();
     let mut buffer: ScreenBuffer = ScreenBuffer::new();
 
-    for args in &args[1..] {
-        match args.as_str() {
-            "-d" | "--debug" => env::set_var("RUST_BACKTRACE", "full"),
-            "-q" | "--quiet" => quiet = true,
-            "-h" | "--help" => {
-                help();
-                return;
-            },
-            _ => ()
-        }
-    }
-
-    while let Some(ch) = ch_iter.next() {
+   while let Some(ch) = ch_iter.next() {
         match mode {
             0 => { //normal text
                 if ch as u32 == 27 {
@@ -217,8 +206,7 @@ fn main() {
                     cursor.next_line(1)
                 }else if ch == '\t' {
                     cursor.horazontal_tab();
-                }
-                else if (ch as u32 > 0 && ch as u32 <= 31) || ch as u32 == 127 {
+                }else if (ch as u32 > 0 && ch as u32 <= 31) || ch as u32 == 127 {
                     warning(&quiet, format!("ASCII Control: {:?} is not implemented", ch));
                 }else {
                     buffer.set_at_cursor(&cursor, ch.clone());
