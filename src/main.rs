@@ -1,4 +1,4 @@
-use std::{io, env};
+use std::{io, io::IsTerminal, env};
 
 struct ScreenBuffer{
     state : Vec<Vec<char>>,
@@ -163,6 +163,7 @@ Convert input containing ANSI escape sequences into plain text.
 }
 
 fn main() {
+    let stdin = io::stdin();
     let mut quiet: bool = false;
     let args: Vec<String> = env::args().collect();
 
@@ -180,8 +181,8 @@ fn main() {
             }
         }
     }
-
-    if atty::is(atty::Stream::Stdin) {
+    
+    if stdin.is_terminal() {
         return;
     }
 
