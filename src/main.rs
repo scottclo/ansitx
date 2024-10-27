@@ -17,20 +17,24 @@ impl ScreenBuffer{
         }
     }
     fn clear_line_at(&mut self, cursor: &ScreenCursor){
+        self.expand_to_cursor(cursor);
         self.state[cursor.y] = Vec::new();
         self.expand_to_cursor(cursor);
     }
     fn clear_line_before(&mut self, cursor: &ScreenCursor){
+        self.expand_to_cursor(cursor);
         for i in 0..cursor.x {
             self.state[cursor.y][i] = ' ';
         }
     }
     fn clear_line_after(&mut self, cursor: &ScreenCursor){
+        self.expand_to_cursor(cursor);
         for i in (cursor.x..self.state[cursor.y].len()).rev(){
             self.state[cursor.y].remove(i);
         }
     }
     fn clear_screen_before(&mut self, cursor: &ScreenCursor) {
+        self.expand_to_cursor(cursor);
         for i in 0..=cursor.y {
             if i == cursor.y {
                 for ii in 0..=cursor.x {
@@ -42,6 +46,7 @@ impl ScreenBuffer{
         }
     }
     fn clear_screen_after(&mut self, cursor: &ScreenCursor) {
+        self.expand_to_cursor(cursor);
         for i in (cursor.y..self.state.len()).rev() {
             if i == cursor.y {
                 for ii in (cursor.x..self.state[i].len()).rev() {
@@ -147,7 +152,7 @@ impl Command {
 
 fn warning(quiet: &bool, message: String) {
     if quiet == &false {
-        print!("Warning: {message}. Use \"ansitx -q\" do hide this message.\n");
+        print!("Warning: {message}. Use \"ansitx -q\" to hide this message.\n");
     }
 }
 
@@ -222,7 +227,7 @@ fn main() {
                 }
                 else if ch == '[' || ch == ';' {
                     command.args.push(String::new());
-                } else if ch == '?' || (ch >= '0' && ch <= '9') {
+                } else if ch == '?' || ch == ':' || (ch >= '0' && ch <= '9') {
                     let i = command.args.len() - 1;
                     command.args[i].push(ch.clone());
                 } else if ch == '(' {
@@ -270,7 +275,7 @@ fn main() {
                 }
             },
             2 => {//os command
-                if ch as u32 == 7 {
+                if ch as u32 == 7 || ch as u32 == 13 {
                     mode = 0;
                 }
             },
